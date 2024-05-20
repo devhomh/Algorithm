@@ -15,21 +15,11 @@ public class Main {
         StringTokenizer line = new StringTokenizer(input.readLine());
         for (int i = 1; i <= num; i++) {
             cards[i] = Integer.parseInt(line.nextToken());
-        }
-
-        dp[1] = cards[1];
-        solution(num);
-
-        System.out.println(dp[num]);
-    }
-
-    public static int solution(int target) {
-        if (dp[target] == 0) {
-            for (int i = 1; i <= target; i++) {
-                dp[target] = Math.max(cards[target], Math.max(dp[target], solution(target - i) + solution(i)));
+            for (int j = 0; j <= i; j++) {
+                dp[i] = Math.max(dp[i], dp[i - j] + cards[j]);
             }
         }
 
-        return dp[target];
+        System.out.println(dp[num]);
     }
 }
