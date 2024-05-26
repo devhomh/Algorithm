@@ -25,6 +25,10 @@ public class Main {
             int mid = (max + min) / 2;
             long sum = 0;
             for (int tree : trees) {
+                if (sum >= target) {
+                    break;
+                }
+
                 if (tree > mid) {
                     sum += tree - mid;
                 }
