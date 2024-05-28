@@ -1,4 +1,3 @@
-import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -21,17 +20,16 @@ public class Main {
         int jewelNum = Integer.parseInt(line.nextToken());
         int bagNum = Integer.parseInt(line.nextToken());
 
-        List<Jewelry> list = new ArrayList<>();
+        PriorityQueue<Jewelry> jewelries = new PriorityQueue<>(
+                (o1, o2) -> o1.weight == o2.weight
+                        ? o2.price - o1.price
+                        : o1.weight - o2.weight);
         for (int i = 0; i < jewelNum; i++) {
             line = new StringTokenizer(input.readLine());
             int weight = Integer.parseInt(line.nextToken());
             int price = Integer.parseInt(line.nextToken());
-            list.add(new Jewelry(weight, price));
+            jewelries.add(new Jewelry(weight, price));
         }
-
-        list.sort((o1, o2) -> o1.weight == o2.weight
-                ? o2.price - o1.price
-                : o1.weight - o2.weight);
 
         int[] bags = new int[bagNum];
         for (int i = 0; i < bagNum; i++) {
@@ -40,11 +38,10 @@ public class Main {
 
         Arrays.sort(bags);
         long totalPrice = 0;
-        int index = 0;
         PriorityQueue<Integer> priorityQueue = new PriorityQueue<>(Collections.reverseOrder());
         for (int bag : bags) {
-            while (index < jewelNum && list.get(index).weight <= bag) {
-                priorityQueue.add(list.get(index++).price);
+            while (!jewelries.isEmpty() && jewelries.peek().weight <= bag) {
+                priorityQueue.add(jewelries.poll().price);
             }
 
             if (!priorityQueue.isEmpty()) {
