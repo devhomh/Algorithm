@@ -8,8 +8,8 @@ public class Main {
         BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
         int num = Integer.parseInt(input.readLine());
         StringTokenizer line;
-        int[] roads = new int[num - 1];
-        int[] cities = new int[num];
+        long[] roads = new long[num - 1];
+        long[] cities = new long[num];
 
         line = new StringTokenizer(input.readLine());
         for (int i = 0; i < num - 1; i++) {
@@ -21,16 +21,14 @@ public class Main {
             cities[i] = Integer.parseInt(line.nextToken());
         }
 
-        int total = 0;
-        total += roads[0] * cities[0];
+        long total = 0;
         int cityIndex = 0;
-        int roadIndex = 1;
-        while (roadIndex != num - 1) {
-            if (cities[cityIndex] > cities[cityIndex + 1]) {
-                cityIndex++;
+        for (int i = 0; i < num - 1; i++) {
+            if (cities[i] < cities[cityIndex]) {
+                cityIndex = i;
             }
 
-            total += cities[cityIndex] * roads[roadIndex++];
+            total += roads[i] * cities[cityIndex];
         }
 
         System.out.println(total);
