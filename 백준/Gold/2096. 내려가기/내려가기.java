@@ -8,47 +8,39 @@ public class Main {
         BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
         int num = Integer.parseInt(input.readLine());
         StringTokenizer line;
-        int[][] board = new int[num][3];
+        // 슬라이딩 윈도우
+        int[] min = new int[3];
+        int[] max = new int[3];
         for (int i = 0; i < num; i++) {
             line = new StringTokenizer(input.readLine());
-            for (int j = 0; j < 3; j++) {
-                board[i][j] = Integer.parseInt(line.nextToken());
+            int left = Integer.parseInt(line.nextToken());
+            int mid = Integer.parseInt(line.nextToken());
+            int right = Integer.parseInt(line.nextToken());
+
+            if (i == 0) {
+                min[0] = max[0] = left;
+                min[1] = max[1] = mid;
+                min[2] = max[2] = right;
+            } else {
+                int leftMin = Math.min(min[0], min[1]);
+                int rightMin = Math.min(min[1], min[2]);
+
+                min[0] = leftMin + left;
+                min[1] = Math.min(leftMin, rightMin) + mid;
+                min[2] = rightMin + right;
+
+                int leftMax = Math.max(max[0], max[1]);
+                int rightMax = Math.max(max[1], max[2]);
+
+                max[0] = leftMax + left;
+                max[1] = Math.max(leftMax, rightMax) + mid;
+                max[2] = rightMax + right;
             }
         }
 
-        StringBuilder result = new StringBuilder();
-        int[][] dp = new int[num + 1][3];
-        Arrays.fill(dp[0], 0);
-        for (int i = 1; i <= num; i++) {
-            for (int j = 0; j < 3; j++) {
-                if (j == 0) {
-                    dp[i][j] = Math.max(dp[i - 1][0], dp[i - 1][1]) + board[i - 1][j];
-                } else if (j == 1) {
-                    dp[i][j] = Math.max(dp[i - 1][0], Math.max(dp[i - 1][1], dp[i - 1][2])) + board[i - 1][j];
-                } else {
-                    dp[i][j] = Math.max(dp[i - 1][1], dp[i - 1][2]) + board[i - 1][j];
-                }
-            }
-        }
+        int minVal = Math.min(min[0], Math.min(min[1], min[2]));
+        int maxVal = Math.max(max[0], Math.max(max[1], max[2]));
 
-        Arrays.sort(dp[num]);
-        result.append(dp[num][2]).append(" ");
-
-        for (int i = 1; i <= num; i++) {
-            for (int j = 0; j < 3; j++) {
-                if (j == 0) {
-                    dp[i][j] = Math.min(dp[i - 1][0], dp[i - 1][1]) + board[i - 1][j];
-                } else if (j == 1) {
-                    dp[i][j] = Math.min(dp[i - 1][0], Math.min(dp[i - 1][1], dp[i - 1][2])) + board[i - 1][j];
-                } else {
-                    dp[i][j] = Math.min(dp[i - 1][1], dp[i - 1][2]) + board[i - 1][j];
-                }
-            }
-        }
-
-        Arrays.sort(dp[num]);
-        result.append(dp[num][0]);
-
-        System.out.println(result);
+        System.out.println(maxVal + " " + minVal);
     }
 }
