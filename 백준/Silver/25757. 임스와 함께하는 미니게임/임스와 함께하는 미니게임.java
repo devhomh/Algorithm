@@ -19,22 +19,11 @@ public class Main {
             required = 3;
         }
 
-        int count = 0;
         Set<String> set = new HashSet<>();
-        List<String> list = new ArrayList<>();
         for (int i = 0; i < num; i++) {
-            String user = input.readLine();
-            if (!set.contains(user)) {
-                set.add(user);
-                list.add(user);
-            }
-
-            if (list.size() == required) {
-                count++;
-                list.clear();
-            }
+            set.add(input.readLine());
         }
 
-        System.out.println(count);
+        System.out.println(set.size() / required);
     }
 }
