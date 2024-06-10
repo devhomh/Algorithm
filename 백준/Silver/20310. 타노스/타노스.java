@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -15,8 +16,25 @@ public class Main {
         }
 
         one = num.length() - zero;
-        String result = "0".repeat(Math.max(0, zero / 2)) +
-                "1".repeat(Math.max(0, one / 2));
+        zero = zero / 2;
+        one = one / 2;
+        String[] arr = num.split("");
+        for (int i = 0; i < arr.length; i++) {
+            if (one != 0 && arr[i].equals("1")) {
+                arr[i] = "-1";
+                one--;
+            }
+        }
+
+        for (int i = arr.length - 1; i >= 0; i--) {
+            if (zero != 0 && arr[i].equals("0")) {
+                arr[i] = "-1";
+                zero--;
+            }
+        }
+
+        StringBuilder result = new StringBuilder();
+        Arrays.stream(arr).filter(e -> !e.equals("-1")).forEach(result::append);
 
         System.out.println(result);
     }
