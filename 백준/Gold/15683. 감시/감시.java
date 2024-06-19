@@ -108,7 +108,7 @@ public class Main {
                     }
 
                     break;
-                case 5 :
+                default:
                     for (int j = 0; j < 4; j++) {
                         bfs(camera.row, camera.column, j, watched);
                     }
