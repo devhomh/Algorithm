@@ -40,13 +40,14 @@ public class Main {
                     arr[right] = arr[left] + 1;
                 }
 
-                // 앞의 숫자의 상위 노드를 뒤의 숫자로 설정; 
+                // 앞의 숫자의 상위 노드를 뒤의 숫자로 설정
                 parent[left] = right;
             } else {
                 increase(right);
             }
         }
 
+        // 밸류가 작은 순으로 우선순위 정렬
         PriorityQueue<Student> priorityQueue =
                 new PriorityQueue<>(Comparator.comparingInt(s -> s.value));
         for (int i = 1; i <= num; i++) {
@@ -61,9 +62,10 @@ public class Main {
         System.out.println(result);
     }
 
+    // 최상위 노드까지 밸류를 1씩 더해준다.
     public static void increase(int start) {
         arr[start]++;
-
+    
         if (parent[start] != start) {
             increase(parent[start]);
         }
