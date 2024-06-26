@@ -33,12 +33,15 @@ public class Main {
             int left = Integer.parseInt(line.nextToken());
             int right = Integer.parseInt(line.nextToken());
 
+            // 상위 노드가 자신일 때
             if (parent[right] == right) {
+                // 앞의 숫자가 뒤의 숫자보다 밸류가 클 때 뒤의 숫자 밸류를 앞의 숫자 밸류보다 높여준다.
                 if (arr[left] >= arr[right]) {
                     arr[right] = arr[left] + 1;
                 }
 
-                parent[left] = parent[right];
+                // 앞의 숫자의 상위 노드를 뒤의 숫자로 설정; 
+                parent[left] = right;
             } else {
                 increase(right);
             }
