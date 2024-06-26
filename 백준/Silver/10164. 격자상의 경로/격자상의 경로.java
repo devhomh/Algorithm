@@ -2,13 +2,10 @@ import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Main {
-    static int[] dx = {1, 0};
-    static int[] dy = {0, 1};
     static int row, column, circle;
 
     public static void main(String[] args) throws IOException {
@@ -19,36 +16,29 @@ public class Main {
         circle = Integer.parseInt(condition.nextToken());
 
         int result = circle == 0 || isStartOrEnd()
-                ? bfs(new Point(0, 0), new Point(row - 1 , column - 1))
-                : bfs(new Point(0, 0), getMark()) * bfs(getMark(), new Point(row - 1, column - 1));
+                ? explore(new Point(0, 0), new Point(row - 1 , column - 1))
+                : explore(new Point(0, 0), getMark()) * explore(getMark(), new Point(row - 1, column - 1));
 
         System.out.println(result);
     }
 
-    public static int bfs(Point start, Point end) {
-        Queue<Point> queue = new LinkedList<>();
-        queue.offer(start);
-
-        int count = 0;
-        while (!queue.isEmpty()) {
-            Point current = queue.poll();
-            for (int i = 0; i < 2; i++) {
-                int nx = current.x + dx[i];
-                int ny = current.y + dy[i];
-
-                if (nx == end.x && ny == end.y) {
-                    count++;
-                    continue;
-                }
-
-                if (nx <= end.x && ny <= end.y) {
-                    queue.offer(new Point(nx, ny));
-                }
+    public static int explore(Point start, Point end) {
+        int tmpRow = end.x - start.x + 1;
+        int tmpColumn = end.y - start.y + 1;
+        int[][] dp = new int[tmpRow][tmpColumn];
+        Arrays.fill(dp[0] , 1);
+        for (int i = 0; i < tmpRow; i++) {
+            dp[i][0] = 1;
+        }
+        for (int i = 1; i < tmpRow; i++) {
+            for (int j = 1; j < tmpColumn; j++) {
+                dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
             }
         }
 
-        return count;
+        return dp[tmpRow - 1][tmpColumn - 1];
     }
+
 
     public static Point getMark() {
         int x = circle % column == 0 ? circle / column - 1 : circle / column;
@@ -60,5 +50,4 @@ public class Main {
     public static boolean isStartOrEnd() {
         return getMark().distance(0, 0) == 0 || getMark().distance(row - 1, column - 1) == 0;
     }
-
 }
