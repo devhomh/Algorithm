@@ -2,10 +2,8 @@ import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.PriorityQueue;
-import java.util.StringTokenizer;
 
 public class Main {
     static StringTokenizer line;
@@ -22,25 +20,17 @@ public class Main {
             priorityQueue.offer(new Point(start, end));
         }
 
-        List<Integer> endTime = new ArrayList<>();
+        PriorityQueue<Integer> endTime = new PriorityQueue<>();
         while (!priorityQueue.isEmpty()) {
             Point next = priorityQueue.poll();
-            boolean isInvolved = false;
             if (endTime.isEmpty()) {
-                endTime.add(next.y);
+                endTime.offer(next.y);
             } else {
-                for (int i = 0; i < endTime.size(); i++) {
-                    if (next.x >= endTime.get(i)) {
-                        isInvolved = true;
-                        endTime.remove(i);
-                        endTime.add(next.y);
-                        break;
-                    }
+                if (endTime.peek() <= next.x) {
+                    endTime.poll();
                 }
-
-                if (!isInvolved) {
-                    endTime.add(next.y);
-                }
+                
+                endTime.offer(next.y);
             }
         }
 
