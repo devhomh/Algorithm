@@ -18,7 +18,7 @@ public class Main {
         column = Integer.parseInt(condition.nextToken());
         circle = Integer.parseInt(condition.nextToken());
 
-        int result = circle == 0
+        int result = circle == 0 || isStartOrEnd()
                 ? bfs(new Point(0, 0), new Point(row - 1 , column - 1))
                 : bfs(new Point(0, 0), getMark()) * bfs(getMark(), new Point(row - 1, column - 1));
 
@@ -51,9 +51,14 @@ public class Main {
     }
 
     public static Point getMark() {
-        int x = circle / column;
+        int x = circle % column == 0 ? circle / column - 1 : circle / column;
         int y = circle % column == 0 ? column - 1 : circle % column - 1;
 
         return new Point(x, y);
     }
+
+    public static boolean isStartOrEnd() {
+        return getMark().distance(0, 0) == 0 || getMark().distance(row - 1, column - 1) == 0;
+    }
+
 }
