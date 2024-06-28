@@ -1,0 +1,115 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
+
+public class Main {
+    static class Node {
+        int index;
+        int distance;
+
+        public Node(int index, int distance) {
+            this.index = index;
+            this.distance = distance;
+        }
+    }
+    static boolean[] owned;
+    static Map<Integer, List<Node>> map = new HashMap<>();
+    static int node, macLength, starLength;
+    static int result = Integer.MAX_VALUE;
+    static StringTokenizer line;
+    public static void main(String[] args) throws IOException {
+        BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
+        line = new StringTokenizer(input.readLine());
+        node = Integer.parseInt(line.nextToken());
+        int vertex = Integer.parseInt(line.nextToken());
+
+        owned = new boolean[node + 1];
+        // 도로 정보
+        for (int i = 0; i < vertex; i++) {
+            line = new StringTokenizer(input.readLine());
+            int start = Integer.parseInt(line.nextToken());
+            int end = Integer.parseInt(line.nextToken());
+            int value = Integer.parseInt(line.nextToken());
+            map.computeIfAbsent(start, k -> new ArrayList<>()).add(new Node(end, value));
+            map.computeIfAbsent(end, k -> new ArrayList<>()).add(new Node(start, value));
+        }
+
+        // 맥도날드 정보
+        List<Integer> macList = new ArrayList<>();
+        line = new StringTokenizer(input.readLine());
+        int macNum = Integer.parseInt(line.nextToken());
+        macLength = Integer.parseInt(line.nextToken());
+
+        line = new StringTokenizer(input.readLine());
+        for (int i = 0; i < macNum; i++) {
+            int tmp = Integer.parseInt(line.nextToken());
+            owned[tmp] = true;
+            macList.add(tmp);
+        }
+
+        // 스타벅스 정보
+        List<Integer> starList = new ArrayList<>();
+        line = new StringTokenizer(input.readLine());
+        int startNum = Integer.parseInt(line.nextToken());
+        starLength = Integer.parseInt(line.nextToken());
+
+        line = new StringTokenizer(input.readLine());
+        for (int i = 0; i < startNum; i++) {
+            int tmp = Integer.parseInt(line.nextToken());
+            owned[tmp] = true;
+            starList.add(tmp);
+        }
+
+        int[] macDistance = dijkstra(macList);
+        int[] starDistance = dijkstra(starList);
+        calculate(macDistance, starDistance);
+
+        System.out.println(result == Integer.MAX_VALUE ? -1 : result);
+    }
+
+    public static void calculate(int[] macDistance, int[] starDistance) {
+        for (int i = 1; i <= node; i++) {
+            if (!owned[i]) {
+                if (macDistance[i] <= macLength && starDistance[i] <= starLength) {
+                    result = Math.min(result, macDistance[i] + starDistance[i]);
+                }
+            }
+        }
+    }
+
+    public static int[] dijkstra(List<Integer> list) {
+        int[] distance = new int[node + 1];
+        Arrays.fill(distance, Integer.MAX_VALUE);
+
+        PriorityQueue<Node> priorityQueue = new PriorityQueue<>(Comparator.comparingInt(n -> n.distance));
+        for (int index : list) {
+            distance[index] = 0;
+            priorityQueue.offer(new Node(index, 0));
+        }
+        boolean[] visited = new boolean[node + 1];
+
+        while (!priorityQueue.isEmpty()) {
+            Node current = priorityQueue.poll();
+            int currentDistance = current.distance;
+            int currentIndex = current.index;
+
+            if (visited[currentIndex]) continue;
+            visited[currentIndex] = true;
+
+            if (map.containsKey(currentIndex)) {
+                List<Node> neighbors = map.get(currentIndex);
+                for (Node neighbor : neighbors) {
+                    if (visited[neighbor.index]) continue;
+                    int newDist = currentDistance + neighbor.distance;
+                    if (newDist < distance[neighbor.index]) {
+                        distance[neighbor.index] = newDist;
+                        priorityQueue.offer(new Node(neighbor.index, newDist));
+                    }
+                }
+            }
+        }
+
+        return distance;
+    }
+}
